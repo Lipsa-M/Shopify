@@ -1,0 +1,75 @@
+{% comment %}
+  Custom Collection Page Template
+{% endcomment %}
+
+{% layout 'theme' %}
+
+<div class="collection-container">
+  <h1>{{ collection.title }}</h1>
+  <p>{{ collection.description }}</p>
+
+  <!-- Price Filter -->
+  <div class="price-filter">
+    <label for="sort-by">Sort by:</label>
+    <select id="sort-by" name="sort-by" onchange="location = this.value;">
+      <option value="{{ collection.url }}">Default</option>
+      <option value="{{ collection.url | append: '?sort_by=price-ascending' }}">Price, low to high</option>
+      <option value="{{ collection.url | append: '?sort_by=price-descending' }}">Price, high to low</option>
+    </select>
+  </div>
+
+  <!-- Product Listing -->
+  <div class="product-listing">
+    {% for product in collection.products %}
+      <div class="product-card">
+        <a href="{{ product.url }}">
+          <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}">
+          <h2>{{ product.title }}</h2>
+        </a>
+        <p>{{ product.price | money }}</p>
+        <form action="/cart/add" method="post" enctype="multipart/form-data">
+          <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+          <button type="submit">Add to Cart</button>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+.collection-container {
+  text-align: center;
+}
+.price-filter {
+  margin-bottom: 20px;
+}
+.product-listing {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+.product-card {
+  border: 1px solid #ddd;
+  padding: 20px;
+  margin: 10px;
+  width: 200px;
+}
+.product-card img {
+  max-width: 100%;
+}
+.product-card h2 {
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+.product-card p {
+  font-size: 1em;
+  color: #333;
+}
+.product-card button {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+</style>
